@@ -27,6 +27,7 @@ module EbayAPI
       end
 
       def string_query(param_options)
+        return unless param_options
         params = param_options.slice(*ALLOWABLE_PARAMS)
         "?#{params.to_query}" unless param_options.blank?
       end
@@ -41,18 +42,12 @@ module EbayAPI
 
       def find(id)
         return unless id.present?
-
         response = http_request(:get, "#{collection_path}/#{id}")
         new(response)
       end
 
       def http_request(verb, url, options={})
-        response = EbayAPI::Client.send(verb, url, options)
-        parse_response(response)
-      end
-
-      def parse_response(response)
-        JSON.parse(response.body.match(/({.*}|\[.*\])/).to_s)
+        EbayAPI::Client.send(verb, url, options)
       end
     end
 
