@@ -32,12 +32,16 @@ module EbayAPI
         "?#{params.to_query}" unless param_options.blank?
       end
 
-      def all(params={})
-        uri = collection_path(params)
-        response = http_request(:get, uri)
+      def all(params = {})
+        response = http_request(:get, collection_path(params))
         response[collection_key].map do |response_object|
           new(response_object)
         end
+      end
+
+      def count
+        response = http_request(:get, collection_path({}))
+        response['total'].to_i
       end
 
       def find(id)
