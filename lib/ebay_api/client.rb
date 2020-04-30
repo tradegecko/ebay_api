@@ -9,7 +9,9 @@ module EbayAPI
     def self.default_client_options
       {
         parser:  HTTParty::Parser,
-        format:  :json
+        format:  :json,
+        # sandbox: false
+        sandbox: true
       }
     end
 
@@ -21,8 +23,14 @@ module EbayAPI
       }
     end
 
+    def self.auto_init
+      token="";
+      self.new('asdf', 'asdf', access_token: token)
+    end
+
     def initialize(client_id, client_secret, options = {})
       session_options = self.class.default_client_options
+      session_options[:sandbox] = options[:sandbox] if options[:sandbox].present?
       session_options[:headers] = self.class.default_headers.merge(
         { "Authorization" => "Bearer #{ options[:access_token] }" }
       )
