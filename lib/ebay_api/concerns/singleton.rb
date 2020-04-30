@@ -15,10 +15,10 @@ module EbayAPI
       end
 
       def uri_prefix
-        if Thread.current["EbayAPI"][:sandbox]
-          "https://api.sandbox.ebay.com"
+        if Thread.current['EbayAPI'][:sandbox]
+          'https://api.sandbox.ebay.com'
         else
-          "https://api.ebay.com"
+          'https://api.ebay.com'
         end
       end
 
