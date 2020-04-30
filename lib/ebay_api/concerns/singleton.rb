@@ -1,10 +1,14 @@
 module EbayAPI
   module Singleton
     module ClassMethods
-
       ALLOWABLE_PARAMS = [
         :limit, :offset
       ].freeze
+
+      API_TYPES_TO_COLLECTION = {
+        fulfillment: %w[order],
+        inventory: %w[inventory_item]
+      }.freeze
 
       def singleton_name
         @singleton_name ||= model_name.element
@@ -18,12 +22,18 @@ module EbayAPI
         end
       end
 
+      def api_type
+        API_TYPES_TO_COLLECTION.keys.detect do |api_type|
+          API_TYPES_TO_COLLECTION[api_type].include?(collection_name)
+        end
+      end
+
       def collection_key
         collection_name.camelize(:lower).pluralize
       end
 
-      def collection_path(param_options=nil)
-        "#{uri_prefix}/sell/inventory/v1/#{collection_name}#{string_query(param_options)}"
+      def collection_path(param_options = {})
+        "#{uri_prefix}/sell/#{api_type}/v1/#{collection_name}#{string_query(param_options)}"
       end
 
       def string_query(param_options)
@@ -40,12 +50,13 @@ module EbayAPI
       end
 
       def count
-        response = http_request(:get, collection_path({}))
+        response = http_request(:get, collection_path)
         response['total'].to_i
       end
 
       def find(id)
         return unless id.present?
+
         response = http_request(:get, "#{collection_path}/#{id}")
         new(response)
       end

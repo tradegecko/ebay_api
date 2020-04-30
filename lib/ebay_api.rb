@@ -7,7 +7,7 @@ require 'pry'
 
 require 'ebay_api/client'
 require 'ebay_api/concerns/singleton'
-require 'ebay_api/resources/inventory_item'
+require 'ebay_api/resources/inventory/inventory_item'
 
 module EbayAPI
   class Error < StandardError; end
