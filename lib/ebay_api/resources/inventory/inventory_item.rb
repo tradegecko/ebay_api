@@ -1,4 +1,5 @@
 require 'ebay_api/resource'
+require 'ebay_api/resources/inventory/product'
 
 module EbayAPI
   class InventoryItem < Resource
@@ -63,18 +64,19 @@ module EbayAPI
     attribute? :inventory_item_group_keys, Types::Array.of(Types::String)
     attribute? :locale, LOCALE
     attribute? :package_weight_and_size do
-      attribute :dimensions do
-        attribute :height, Types::Integer
-        attribute :length, Types::Integer
-        attribute :width, Types::Integer
+      attribute? :dimensions do
+        attribute :height, Types::Float
+        attribute :length, Types::Float
+        attribute :width, Types::Float
         attribute :unit, LENGTH_UNIT
       end
-      attribute :package_type, Types::String
-      attribute :weight do
+      attribute? :package_type, Types::String
+      attribute? :weight do
         attribute :unit, Types::String
-        attribute :value, Types::Integer
+        attribute :value, Types::Float
       end
     end
+    attribute? :product, EbayAPI::Product
 
     def self.collection_name
       'inventory_item'
