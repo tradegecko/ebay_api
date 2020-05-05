@@ -122,9 +122,8 @@ module EbayAPI
       end.to_xml
 
       response = http_request(__method__, body)
-      response['GetSellerListResponse']['ItemArray']['Item'].map do |item|
-        new(item)
-      end
+      items = Array.wrap(response['GetSellerListResponse']['ItemArray']['Item'])
+      items.map {|item| new(item) }
     end
   end
 end
