@@ -7,11 +7,13 @@ module EbayAPI
     include EbayAPI::Singleton
 
     transform_keys do |key|
-      key.underscore.to_sym
+      key == '__content__' ? :value : key.underscore.to_sym
     end
 
     module Types
       include Dry.Types()
+
+      EbayArray = Types.Constructor(Array) { |values| ::Array.wrap(values) }
     end
   end
 end
