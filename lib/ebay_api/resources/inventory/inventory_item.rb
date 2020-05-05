@@ -106,10 +106,10 @@ module EbayAPI
           xml.Sort params[:sort] if params[:sort]
           xml.StartTimeFrom start_time_from
           xml.StartTimeTo start_time_to
-          xml.GranularityLevel 'Fine' || params[:granularity_level]
+          xml.GranularityLevel params[:granularity_level] || 'Fine'
           xml.Pagination {
-            xml.EntriesPerPage 200 || params[:limit]
-            xml.PageNumber 1 || params[:page]
+            xml.EntriesPerPage params[:limit] || 200
+            xml.PageNumber params[:page] || 1
           }
           if params[:skus]
             xml.SKUArray {
@@ -120,6 +120,7 @@ module EbayAPI
           end
         end
       end.to_xml
+
       response = http_request(__method__, body)
       response['GetSellerListResponse']['ItemArray']['Item'].map do |item|
         new(item)
