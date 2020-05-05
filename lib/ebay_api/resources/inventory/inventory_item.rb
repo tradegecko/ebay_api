@@ -40,6 +40,7 @@ module EbayAPI
 
     PACKAGE_TYPES = Types::String
 
+    attribute :item_id, Types::String
     attribute? :sku, Types::String
     attribute? :availability do
       attribute? :pickup_at_location_availability, Types::Array do
@@ -80,6 +81,49 @@ module EbayAPI
 
     def self.collection_name
       'inventory_item'
+    end
+
+    def self.get_item(id)
+      return unless id.present?
+
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.GetItemRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.ItemID id
+        end
+      end.to_xml
+
+      response = http_request(__method__, body)
+      new(response['GetItemResponse']['Item'])
+    end
+
+    def self.get_seller_list(params = {})
+      start_time_to = params[:start_time_to] || Time.now.utc
+      start_time_from = params[:start_time_from] || start_time_to - 100.days
+
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.GetSellerListRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.IncludeVariations true
+          xml.Sort params[:sort] if params[:sort]
+          xml.StartTimeFrom start_time_from
+          xml.StartTimeTo start_time_to
+          xml.GranularityLevel 'Fine' || params[:granularity_level]
+          xml.Pagination {
+            xml.EntriesPerPage 200 || params[:limit]
+            xml.PageNumber 1 || params[:page]
+          }
+          if params[:skus]
+            xml.SKUArray {
+              params[:skus].each do |sku|
+                xml.SKU sku
+              end
+            }
+          end
+        end
+      end.to_xml
+      response = http_request(__method__, body)
+      response['GetSellerListResponse']['ItemArray']['Item'].map do |item|
+        new(item)
+      end
     end
   end
 end
