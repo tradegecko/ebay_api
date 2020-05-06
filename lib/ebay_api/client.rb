@@ -71,6 +71,8 @@ module EbayAPI
       errors = Array.wrap(errors)
       if token_invalid?(errors)
         raise EbayAPI::InvalidToken
+      elsif page_invalid?(errors)
+        raise EbayAPI::InvalidPage
       else
         raise EbayAPI::Error
       end
@@ -79,6 +81,12 @@ module EbayAPI
     def self.token_invalid?(errors=[])
       errors.any? do |error|
         error['ErrorCode'] == '21917053' && error['ShortMessage'] == 'Expired IAF token.'
+      end
+    end
+
+    def self.page_invalid?(errors=[])
+      errors.any? do |error|
+        error['ErrorCode'] == '340' && error['ShortMessage'] == 'Invalid page number.'
       end
     end
 

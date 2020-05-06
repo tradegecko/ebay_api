@@ -12,12 +12,8 @@ require 'ebay_api/resources/shared/category'
 require 'ebay_api/resources/shared/name_value_list'
 
 module EbayAPI
-  class InventoryItem < Resource
-    wrapped_array = Types::Array.of(Types::String).constructor do |x|
-      Array.wrap(x)
-    end
-
-    attribute :auto_pay, Types::Params::Bool
+  class Item < Resource
+    attribute? :auto_pay, Types::Params::Bool
     attribute? :application_data, Types::String
     attribute? :apply_buyer_protection do
       attribute? :buyer_protection_source, Types::String
@@ -70,7 +66,7 @@ module EbayAPI
     attribute? :condition_definition, Types::String
     attribute? :condition_display_name, Types::String
     attribute? :condition_id, Types::Coercible::Integer
-    attribute :country, Types::String
+    attribute? :country, Types::String
     attribute? :cross_border_trade, Types::EbayArray.of(Types::String)
     attribute? :currency, Types::String
     attribute? :description, Types::String
@@ -320,7 +316,7 @@ module EbayAPI
     attribute? :watch_count, Types::Coercible::Float
 
     def self.collection_name
-      'inventory_item'
+      'item'
     end
 
     def self.get_item(id)
@@ -362,8 +358,14 @@ module EbayAPI
       end.to_xml
 
       response = http_request(__method__, body)
+
       items = Array.wrap(response['GetSellerListResponse']['ItemArray']['Item'])
       items.map {|item| new(item) }
+    rescue EbayAPI::InvalidPage
+      []
     end
   end
 end
+
+
+

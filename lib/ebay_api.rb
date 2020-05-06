@@ -8,11 +8,12 @@ require 'nokogiri'
 
 require 'ebay_api/client'
 require 'ebay_api/concerns/singleton'
-require 'ebay_api/resources/inventory/inventory_item'
-require 'ebay_api/resources/fulfillment/order'
+require 'ebay_api/resources/api/item'
+require 'ebay_api/resources/api/order'
 
 module EbayAPI
   class Error < StandardError; end
   class InvalidToken < StandardError; end
+  class InvalidPage < StandardError; end
   # Your code goes here...
 end
