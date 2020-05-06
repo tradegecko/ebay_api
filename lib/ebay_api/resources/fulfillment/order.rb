@@ -1,162 +1,216 @@
 require 'ebay_api/resource'
 require 'ebay_api/resources/shared/address'
 require 'ebay_api/resources/shared/amount'
+require 'ebay_api/resources/shared/external_transaction'
+require 'ebay_api/resources/shared/monetary_details'
+require 'ebay_api/resources/shared/multi_leg_shipping_details'
+require 'ebay_api/resources/shared/payment_hold_details'
+require 'ebay_api/resources/shared/pickup_method_selected'
+require 'ebay_api/resources/shared/shipping_details'
+require 'ebay_api/resources/shared/shipping_service_selected'
+require 'ebay_api/resources/shared/tax_details'
+require 'ebay_api/resources/shared/user'
 
 module EbayAPI
   class Order < Resource
-    attribute :buyer do
-      attribute :username, Types::String
-      attribute? :taxIdentifier do
-        attribute? :taxpayer_id, Types::String
-        attribute? :tax_identifier_type, Types::String
-        attribute? :issuing_country,Types::String
+    attribute :adjustment_amount, EbayAPI::Amount
+    attribute :amount_paid, EbayAPI::Amount
+    attribute :amount_saved, EbayAPI::Amount
+    attribute? :buyer_checkout_message, Types::String.optional
+    attribute? :buyer_package_enclosures, Types::EbayArray do
+      attribute? :type, Types::String.optional
+      attribute? :value, Types::String.optional
+    end
+    attribute? :buyer_tax_identifier, Types::EbayArray do
+      attribute? :attribute, Types::EbayArray do
+        attribute? :name, Types::String.optional
+        attribute? :value, Types::String.optional
+      end
+      attribute? :id, Types::String.optional
+      attribute? :type, Types::String.optional
+    end
+    attribute :buyer_user_id, Types::String.optional
+    attribute? :cancel_detail, Types::EbayArray do
+      attribute? :cancel_complete_date, Types::Params::DateTime
+      attribute? :cancel_initiation_date, Types::Params::DateTime
+      attribute? :cancelintiator, Types::String.optional
+      attribute? :cancel_reason, Types::String.optional
+      attribute? :cancel_reason_details, Types::String.optional
+    end
+    attribute? :cancel_reason, Types::String.optional
+    attribute? :cancel_reason_details, Types::String.optional
+    attribute? :cancel_status, Types::String.optional
+    attribute :checkout_status do
+      attribute :e_bay_payment_status, Types::String.optional
+      attribute :integrated_merchant_credit_card_enabled, Types::Params::Bool
+      attribute :last_modified_time, Types::Params::DateTime
+      attribute? :payment_instrument, Types::String.optional
+      attribute :payment_method, Types::String.optional
+      attribute :status, Types::String.optional
+    end
+    attribute? :containse_bay_plus_transaction, Types::Params::Bool
+    attribute :created_time, Types::Params::DateTime
+    attribute? :creating_user_role, Types::String.optional
+    attribute? :e_bay_collect_and_remit_tax, Types::Params::Bool
+    attribute? :eias_token, Types::String.optional
+    attribute? :extended_order_id, Types::String.optional
+    attribute? :external_transaction, Types::EbayArray.of(EbayAPI::ExternalTransaction)
+    attribute :integrated_merchant_credit_card_enabled, Types::Params::Bool
+    attribute? :is_multi_leg_shipping, Types::Params::Bool
+    attribute? :logistics_plan_type, Types::String.optional
+    attribute? :monetary_details, EbayAPI::MonetaryDetails
+    attribute? :multi_leg_shipping_details, EbayAPI::MultiLegShippingDetails
+    attribute :order_id, Types::String.optional
+    attribute :order_status, Types::String.optional
+    attribute? :paid_time, Types::Params::DateTime
+    attribute? :payment_hold_details, EbayAPI::PaymentHoldDetails
+    attribute :payment_hold_status, Types::String.optional
+    attribute :payment_methods, Types::EbayArray.of(Types::String.optional)
+    attribute? :pickup_details do
+      attribute? :pickup_options, Types::EbayArray do
+        attribute? :pickup_method, Types::String.optional
+        attribute? :pickup_priority, Types::Coercible::Integer
       end
     end
-    attribute? :buyer_checkout_notes, Types::String
-    attribute? :cancel_status do
-      attribute :cancel_state, Types::String
-      attribute? :cancelled_date, Types::DateTime.constructor(&:to_datetime)
-      attribute :cancel_requests, Types::Array do
-        attribute? :cancel_completed_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :cancel_initiator, Types::String
-        attribute? :cancel_reason, Types::String
-        attribute :cancel_requested_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :cancel_request_id, Types::String
-        attribute? :cancel_request_state, Types::String
-      end
-    end
-    attribute :creation_date, Types::DateTime.constructor(&:to_datetime)
-    attribute? :ebay_collect_and_remit_tax, Types::Bool
-    attribute? :fulfillment_hrefs, Types::Array.of(Types::String)
-    attribute :fulfillment_start_instructions, Types::Array do
-      attribute? :destination_time_zone, Types::String
-      attribute? :ebay_supported_fulfillment, Types::Bool
-      attribute? :final_destination_address, EbayAPI::Address
-      attribute :fulfillment_instructions_type, Types::String
-      attribute? :max_estimated_delivery_date, Types::DateTime.constructor(&:to_datetime)
-      attribute? :min_estimated_delivery_date, Types::DateTime.constructor(&:to_datetime)
-      attribute? :pickup_step do
-        attribute? :merchant_location_key, Types::String
-      end
-      attribute? :shipping_step do
-        attribute :shipping_carrier_code, Types::String
-        attribute :shipping_service_code, Types::String
-        attribute :ship_to do
-          attribute? :company_name, Types::String
-          attribute :contact_address, EbayAPI::Address
-          attribute? :email, Types::String
-          attribute :full_name, Types::String
-          attribute? :primary_phone do
-            attribute :phone_number, Types::String
+    attribute? :pickup_method_selected, EbayAPI::PickupMethodSelected
+    attribute? :seller_eias_token, Types::String.optional
+    attribute? :seller_email, Types::String.optional
+    attribute? :seller_user_id, Types::String.optional
+    attribute? :shipped_time, Types::Params::DateTime
+    attribute :shipping_address, EbayAPI::Address
+    attribute :shipping_details, EbayAPI::ShippingDetails
+    attribute :shipping_service_selected, EbayAPI::ShippingServiceSelected
+    attribute :subtotal, EbayAPI::Amount
+    attribute :total, EbayAPI::Amount
+    attribute :transaction_array do
+      attribute :transaction, Types::EbayArray do
+        attribute? :actual_handling_cost, EbayAPI::Amount
+        attribute? :actual_shipping_cost, EbayAPI::Amount
+        attribute? :buyer, EbayAPI::User
+        attribute? :buyer_package_enclosures do
+          attribute :buyer_package_enclosure, Types::EbayArray do
+            attribute? :type, Types::String.optional
+            attribute? :value, Types::String.optional
           end
         end
-        attribute? :ship_to_reference_id, Types::String
-      end
-    end
-    attribute :last_modified_date, Types::DateTime.constructor(&:to_datetime)
-    attribute :legacy_order_id, Types::String
-    attribute :line_items, Types::Array do
-      attribute :applied_promotions, Types::Array do
-        attribute? :description, Types::String
-        attribute? :discountAmount, EbayAPI::Amount
-        attribute? :promotion_id, Types::String
-      end
-      attribute :delivery_cost do
-        attribute? :import_charges, EbayAPI::Amount
-        attribute :shipping_cost, EbayAPI::Amount
-        attribute? :shipping_intermediation_fee, EbayAPI::Amount
-      end
-      attribute? :discounted_line_item_cost, EbayAPI::Amount
-      attribute? :ebay_collect_and_remit_taxes, Types::Array do
-        attribute? :amount, EbayAPI::Amount
-        attribute? :tax_type, Types::String
-        attribute? :collection_method, Types::String
-      end
-      attribute? :gift_details do
-        attribute? :message, Types::String
-        attribute :recipient_email, Types::String
-        attribute :sender_name, Types::String
-      end
-      attribute :legacy_item_id, Types::String
-      attribute? :legacy_variation_id, Types::String
-      attribute :line_item_cost, EbayAPI::Amount
-      attribute :line_item_fulfillment_instructions do
-        attribute? :destination_time_zone, Types::String
-        attribute :guaranteed_delivery, Types::Bool
-        attribute :max_estimated_delivery_date, Types::DateTime.constructor(&:to_datetime)
-        attribute :min_estimated_delivery_date, Types::DateTime.constructor(&:to_datetime)
-        attribute :ship_by_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :source_time_zone, Types::String
-      end
-      attribute :line_item_fulfillment_status, Types::String
-      attribute :line_item_id, Types::String
-      attribute :listing_marketplace_id, Types::String
-      attribute :properties do
-        attribute :buyer_protection, Types::Bool
-        attribute? :from_best_offer, Types::Bool
-        attribute? :sold_via_ad_campaign, Types::Bool
-      end
-      attribute :purchase_marketplace_id, Types::String
-      attribute :quantity, Types::Integer
-      attribute :refunds, Types::Array do
-        attribute? :amount, EbayAPI::Amount
-        attribute? :refund_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :refund_id, Types::String
-        attribute? :refund_reference_id, Types::String
-      end
-      attribute? :sku, Types::String
-      attribute :sold_format, Types::String
-      attribute :taxes, Types::Array do
-        attribute? :amount, EbayAPI::Amount
-      end
-      attribute :title, Types::String
-      attribute :total, EbayAPI::Amount
-    end
-    attribute :order_fulfillment_status, Types::String
-    attribute :order_id, Types::String
-    attribute :order_payment_status, Types::String
-    attribute :payment_summary do
-      attribute :payments, Types::Array do
-        attribute :amount, EbayAPI::Amount
-        attribute? :payment_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :payment_holds, Types::Array do
-          attribute? :expected_release_date, Types::DateTime.constructor(&:to_datetime)
-          attribute? :hold_amount, EbayAPI::Amount
-          attribute? :hold_reason, Types::String
-          attribute? :hold_state, Types::String
-          attribute? :release_date, Types::DateTime.constructor(&:to_datetime)
-          attribute? :seller_actions_to_release, Types::Array do
-            attribute? :seller_action_to_release, Types::String
+        attribute :created_date, Types::Params::DateTime
+        attribute? :digital_delivery_selected do
+          attribute? :delivery_details do
+            attribute? :recipient do
+              attribute? :email, Types::String.optional
+              attribute? :name, Types::String.optional
+            end
+            attribute? :sender do
+              attribute? :email, Types::String.optional
+              attribute? :name, Types::String.optional
+            end
+            attribute? :delivery_method, Types::String.optional
+            attribute? :delivery_status do
+              attribute? :email, Types::String.optional
+            end
           end
         end
-        attribute :payment_method, Types::String
-        attribute? :payment_reference_id, Types::String
-        attribute :payment_status, Types::String
+        attribute? :e_bay_collect_and_remit_tax, Types::Params::Bool
+        attribute? :e_bay_collect_and_remit_taxes do
+          attribute? :tax_details, Types::EbayArray.of(EbayAPI::TaxDetails)
+          attribute? :total_tax_amount, EbayAPI::Amount
+        end
+        attribute? :e_bay_plus_transaction, Types::Params::Bool
+        attribute? :extended_order_id, Types::String.optional
+        attribute? :external_transaction, Types::EbayArray.of(EbayAPI::ExternalTransaction)
+        attribute? :final_value_fee, EbayAPI::Amount
+        attribute? :gift, Types::Params::Bool
+        attribute? :gift_summary do
+          attribute? :message, Types::String.optional
+        end
+        attribute? :guaranteed_delivery, Types::Params::Bool
+        attribute? :guaranteed_shipping, Types::Params::Bool
+        attribute? :inventory_reservation_id, Types::String.optional
+        attribute? :invoice_sent_time, Types::Params::DateTime
+        attribute :item do
+          attribute? :integrated_merchant_credit_card_enabled, Types::Params::Bool
+          attribute :item_id, Types::String.optional
+          attribute? :site, Types::String.optional
+          attribute? :sku, Types::String.optional
+          attribute :title, Types::String.optional
+        end
+        attribute? :logistics_plan_type, Types::String.optional
+        attribute? :monetary_details, EbayAPI::MonetaryDetails
+        attribute? :multi_leg_shipping_details, EbayAPI::MultiLegShippingDetails
+        attribute? :order_line_item_id, Types::String.optional
+        attribute? :paid_time, Types::Params::DateTime
+        attribute? :payment_hold_details, EbayAPI::PaymentHoldDetails
+        attribute? :pickup_method_selected, EbayAPI::PickupMethodSelected
+        attribute :quantity_purchased, Types::Coercible::Integer
+        attribute? :seller_discounts do
+          attribute? :original_item_price, EbayAPI::Amount
+          attribute? :original_item_shipping_cost, EbayAPI::Amount
+          attribute? :original_shipping_service, Types::String.optional
+          attribute? :seller_discount, Types::EbayArray do
+            attribute? :campaign_display_name, Types::String.optional
+            attribute? :campaign_id, Types::String.optional
+            attribute? :item_discount_amount, EbayAPI::Amount
+            attribute? :shipping_discount_amount, EbayAPI::Amount
+          end
+        end
+        attribute? :shipped_time, Types::Params::DateTime
+        attribute? :shipping_details, EbayAPI::ShippingDetails
+        attribute? :shipping_service_selected, EbayAPI::ShippingServiceSelected
+        attribute? :status do
+          attribute? :digital_status, Types::String.optional
+          attribute? :inquiry_status, Types::String.optional
+          attribute? :integrated_merchant_credit_card_enabled, Types::Params::Bool
+          attribute? :payment_hold_status, Types::String.optional
+          attribute? :payment_instrument, Types::String.optional
+          attribute? :return_status, Types::String.optional
+        end
+        attribute? :taxes do
+          attribute? :tax_details, Types::EbayArray.of(EbayAPI::TaxDetails)
+          attribute? :total_tax_amount, EbayAPI::Amount
+        end
+        attribute? :transaction_id, Types::String.optional
+        attribute? :transaction_price, EbayAPI::Amount
+        attribute? :transaction_site_id, Types::String.optional
+        attribute? :unpaid_item do
+          attribute? :status, Types::String.optional
+          attribute? :type, Types::String.optional
+        end
+        attribute? :variation do
+          attribute? :sku, Types::String.optional
+          attribute? :variation_specifics, Types::EbayArray do
+            attribute? :name_value_list, Types::EbayArray do
+              attribute? :name, Types::String.optional
+              attribute? :value, Types::EbayArray.of(Types::String.optional)
+            end
+          end
+          attribute? :variation_title, Types::String.optional
+          attribute? :variation_view_item_url, Types::String.optional
+        end
       end
-      attribute :refunds, Types::Array do
-        attribute? :amount, EbayAPI::Amount
-        attribute? :refund_date, Types::DateTime.constructor(&:to_datetime)
-        attribute? :refund_id, Types::String
-        attribute? :refund_reference_id, Types::String
-        attribute? :refund_status, Types::String
-      end
-      attribute :total_due_seller, EbayAPI::Amount
     end
-    attribute :pricing_summary do
-      attribute? :adjustment, EbayAPI::Amount
-      attribute :delivery_cost, EbayAPI::Amount
-      attribute? :delivery_discount, EbayAPI::Amount
-      attribute? :fee, EbayAPI::Amount
-      attribute? :price_discount_subtotal, EbayAPI::Amount
-      attribute :price_subtotal, EbayAPI::Amount
-      attribute? :tax, EbayAPI::Amount
-      attribute :total, EbayAPI::Amount
-    end
-    attribute? :sales_record_reference, Types::String
-    attribute :seller_id, Types::String
 
-    def self.collection_name
-      'order'
+    def self.get_orders(options: {})
+      # TODO : Ensure Options can be used instead of order_ids
+      return if options[:order_ids].empty?
+
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.GetOrdersRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.OrderIDArray do
+            options[:order_ids].each do |order_id|
+              xml.OrderID order_id
+            end
+          end
+        end
+      end.to_xml
+
+      response = http_request(__method__, body)
+      orders = Array.wrap(response['GetOrdersResponse']['OrderArray']['Order'])
+      orders.map { |order| new(order) }
+    end
+
+    def self.get_order(order_id)
+      orders = get_orders(options: {order_ids: Array.wrap(order_id)})
+      orders.one? ? orders.first : orders
     end
   end
 end
