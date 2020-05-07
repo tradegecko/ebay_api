@@ -14,7 +14,8 @@ module EbayAPI
         headers =  EbayAPI::Client.default_options[:headers].merge({
           "X-EBAY-API-CALL-NAME" => action.to_s.camelize
         })
-        EbayAPI::Client.post(api_endpoint, { body: body, headers: headers })
+        EbayAPI::Client.last_response = EbayAPI::Client.post(api_endpoint, { body: body, headers: headers })
+        EbayAPI::Client.last_response
       end
 
       def api_endpoint

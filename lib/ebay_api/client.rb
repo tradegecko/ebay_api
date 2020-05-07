@@ -1,6 +1,7 @@
 module EbayAPI
   class Client
     include HTTParty
+    thread_mattr_accessor :last_response, instance_accessor: false
 
     def self.default_options
       Thread.current["EbayAPI"] || raise("Session has not been activated yet")
