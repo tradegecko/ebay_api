@@ -3,6 +3,7 @@ PATH
   specs:
     ebay_api (0.1.0)
       activesupport
+      dry-struct
       httparty
       nokogiri
       oauth2

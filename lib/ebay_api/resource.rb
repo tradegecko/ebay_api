@@ -1,5 +1,4 @@
 require 'dry-types'
-require 'dry-struct'
 require 'ebay_api/concerns/singleton'
 
 module EbayAPI

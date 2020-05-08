@@ -3,6 +3,7 @@ require 'ebay_api/version'
 require 'oauth2'
 require 'active_support/all'
 require 'httparty'
+require 'dry-struct'
 require 'pry'
 require 'nokogiri'
 
