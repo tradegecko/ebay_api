@@ -13,7 +13,7 @@ module EbayAPI
       attribute? :international_packaging_handling_costs, Types::Coercible::Float
       attribute? :measurement_unit, EbayAPI::Measure
       attribute? :originating_postal_code, Types::String.optional
-      attribute? :packaging_handling_costs, Types::Coercible::Float
+      attribute? :packaging_handling_costs, EbayAPI::Amount
       attribute? :shipping_irregular, Types::Params::Bool
     end
     attribute? :change_payment_instructions, Types::Params::Bool
@@ -76,7 +76,7 @@ module EbayAPI
     attribute? :shipping_discount_profile_id, Types::String.optional
     attribute? :shipping_rate_error_message, Types::String.optional
     attribute? :shipping_rate_type, Types::String.optional
-    attribute? :shipping_service_options, EbayAPI::ShippingServiceOptions
+    attribute? :shipping_service_options, Types::EbayArray.of(EbayAPI::ShippingServiceOptions)
     attribute? :shipping_service_used, Types::String.optional
     attribute? :shipping_type, Types::String.optional
     attribute? :tax_table do
