@@ -230,5 +230,29 @@ module EbayAPI
       orders = get_orders({order_ids: Array.wrap(order_id)})
       orders.one? ? orders.first : orders
     end
+
+    def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+      response = complete_sale(order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+      raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
+
+      return true
+    end
+
+    private_class_method def self.complete_sale(order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.CompleteSaleRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.OrderLineItemID order_line_item_id
+          xml.Shipment {
+            xml.ShipmentTrackingDetails {
+              xml.ShipmentTrackingNumber shipment_tracking_number
+              xml.ShippingCarrierUsed shipping_carrier_used
+            }
+            xml.ShippedTime Time.now.utc
+          }
+        end
+      end.to_xml
+
+      response = http_request(__method__, body)
+    end
   end
 end
