@@ -74,7 +74,9 @@ module EbayAPI
       elsif page_invalid?(errors)
         raise EbayAPI::InvalidPage
       else
-        raise EbayAPI::Error
+        error = errors.first
+        error_message = "Code: #{error['ErrorCode']} - #{error['ShortMessage']}"
+        raise EbayAPI::Error.new error_message
       end
     end
 

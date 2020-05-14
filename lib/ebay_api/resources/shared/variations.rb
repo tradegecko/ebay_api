@@ -11,14 +11,17 @@ module EbayAPI
         attribute? :new_name, Types::String
       end
     end
-    attribute? :pictures, Types::EbayArray do
+    attribute? :pictures do
       attribute? :variation_specific_name, Types::String
       attribute? :variation_specific_picture_set, Types::EbayArray do
         attribute? :extended_picture_details do
-          attribute? :picture_ur_ls, Types::EbayArray.of(Types::String)
+          attribute? :picture_ur_ls, Types::EbayArray do
+            attribute? :e_bay_picture_url, Types::EbayArray.of(Types::String)
+            attribute? :external_picture_url, Types::String
+          end
         end
-        attribute? :external_picture_url, Types::String
-        attribute? :gallery_url, Types::String
+        attribute? :external_picture_url, Types::EbayArray.of(Types::String)
+        attribute? :gallery_url, Types::EbayArray.of(Types::String)
         attribute? :picture_url, Types::EbayArray.of(Types::String)
         attribute? :variation_specific_value, Types::String
       end

@@ -364,6 +364,43 @@ module EbayAPI
     rescue EbayAPI::InvalidPage
       []
     end
+
+    def update_attributes(attributes = {})
+      response = revise_fixed_price_item(attributes)
+      raise EbayAPI::Error if response && response['ReviseFixedPriceItemResponse']['Ack'] != 'Success'
+
+      return true
+    end
+
+  private
+
+    def revise_fixed_price_item(attributes)
+      return if attributes.empty?
+
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.ReviseFixedPriceItemRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.Item {
+            xml.ItemID item_id
+            if (variations.present? && attributes[:sku])
+              current_variation = variations.variation.detect{|var| var.sku == attributes[:sku]}
+              xml.Variations {
+                xml.Variation {
+                  xml.SKU attributes[:sku]
+                  xml.Quantity attributes[:quantity] || current_variation.quantity
+                  xml.StartPrice attributes[:price] || current_variation.start_price.value
+                }
+              }
+            else
+              xml.Quantity attributes[:quantity] || quantity
+              xml.StartPrice attributes[:price] || start_price.value
+              xml.SKU attributes[:sku] || sku
+            end
+          }
+        end
+      end.to_xml
+
+      response = EbayAPI::Item.http_request(__method__, body)
+    end
   end
 end
 
