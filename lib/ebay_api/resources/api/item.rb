@@ -13,6 +13,8 @@ require 'ebay_api/resources/shared/name_value_list'
 
 module EbayAPI
   class Item < Resource
+    VARIANT_ATTRIBUTES =  %w[quantity price].map(&:to_sym)
+
     attribute? :auto_pay, Types::Params::Bool
     attribute? :application_data, Types::String
     attribute? :apply_buyer_protection do
@@ -365,35 +367,32 @@ module EbayAPI
       []
     end
 
-    def update_attributes(attributes = {})
-      response = revise_fixed_price_item(attributes)
+    def self.update_attributes(item_id, attributes, has_variations: false)
+      return if attributes.empty?
+
+      response = revise_fixed_price_item(item_id, attributes, has_variations)
       raise EbayAPI::Error if response && response['ReviseFixedPriceItemResponse']['Ack'] != 'Success'
 
       return true
     end
 
-  private
-
-    def revise_fixed_price_item(attributes)
-      return if attributes.empty?
-
+    private_class_method def self.revise_fixed_price_item(item_id, attributes, has_variations)
       body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
         xml.ReviseFixedPriceItemRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
           xml.Item {
             xml.ItemID item_id
-            if (variations.present? && attributes[:sku])
-              current_variation = variations.variation.detect{|var| var.sku == attributes[:sku]}
+            if (has_variations && (VARIANT_ATTRIBUTES & attributes.keys).present?)
               xml.Variations {
                 xml.Variation {
                   xml.SKU attributes[:sku]
-                  xml.Quantity attributes[:quantity] || current_variation.quantity
-                  xml.StartPrice attributes[:price] || current_variation.start_price.value
+                  xml.Quantity attributes[:quantity] if attributes[:quantity]
+                  xml.StartPrice attributes[:price] if attributes[:price]
                 }
               }
             else
-              xml.Quantity attributes[:quantity] || quantity
-              xml.StartPrice attributes[:price] || start_price.value
-              xml.SKU attributes[:sku] || sku
+              xml.Quantity attributes[:quantity] if attributes[:quantity]
+              xml.StartPrice attributes[:price] if attributes[:price]
+              xml.SKU attributes[:sku] if attributes[:sku]
             end
           }
         end
