@@ -18,8 +18,8 @@ module EbayAPI
     def self.default_headers
       {
         "Content-Type" => 'text/xml',
-        "X-EBAY-API-COMPATIBILITY-LEVEL" => "967",
         "X-EBAY-API-SITEID" => "0",
+        "X-EBAY-API-COMPATIBILITY-LEVEL" => "967"
       }
     end
 
@@ -28,8 +28,9 @@ module EbayAPI
       refresh_token = 'v^1.1#i^1#f^0#p^3#r^1#I^3#t^Ul4xMF8xMDpENjkzMEYxNzUwRkIzODRCRkY3OUJFN0FCRkUyQ0UyNl8wXzEjRV4xMjg0'
       client_id     = 'TradeGec-TradeGec-SBX-2196b7be0-3d4642fe';
       client_secret = 'SBX-196b7be0b40b-4544-40de-889e-2e8b';
+      site_id       = "0"
 
-      self.new(client_id, client_secret, access_token: token, refresh_token: refresh_token)
+      self.new(client_id, client_secret, access_token: token, refresh_token: refresh_token, site_id: site_id)
     end
 
     def initialize(client_id, client_secret, options = {})
@@ -41,7 +42,7 @@ module EbayAPI
       session_options[:sandbox] = options[:sandbox] if options[:sandbox].present?
       session_options[:headers] = self.class.default_headers.merge(
         {
-          "X-EBAY-API-SITEID" => "0",
+          "X-EBAY-API-SITEID"    => options[:site_id],
           "X-EBAY-API-IAF-TOKEN" => options[:access_token]
         }
       )
