@@ -110,7 +110,7 @@ module EbayAPI
 
     def self.token_invalid?(errors=[])
       errors.any? do |error|
-        error['ErrorCode'] == '21917053' && error['ShortMessage'] == 'Expired IAF token.'
+        error['ErrorCode'] == '21917053' && error['ShortMessage'].include?('IAF')
       end
     end
 
