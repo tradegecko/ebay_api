@@ -35,8 +35,7 @@ module EbayAPI
       {
         parser:  HTTParty::Parser,
         format:  :xml,
-        # sandbox: false
-        sandbox: true
+        sandbox: false
       }
     end
 
@@ -47,16 +46,6 @@ module EbayAPI
         "X-EBAY-API-SITEID" => "0",
         "X-EBAY-SOA-GLOBAL-ID" => "EBAY-US"
       }
-    end
-
-    def self.auto_init
-      token         = 'v^1.1#i^1#f^0#p^3#r^0#I^3#t^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'
-      refresh_token = 'v^1.1#i^1#f^0#p^3#r^1#I^3#t^Ul4xMF8xMDpENjkzMEYxNzUwRkIzODRCRkY3OUJFN0FCRkUyQ0UyNl8wXzEjRV4xMjg0'
-      client_id     = 'TradeGec-TradeGec-SBX-2196b7be0-3d4642fe';
-      client_secret = 'SBX-196b7be0b40b-4544-40de-889e-2e8b';
-      site_id       = "0"
-
-      self.new(client_id, client_secret, access_token: token, refresh_token: refresh_token, site_id: site_id)
     end
 
     def initialize(client_id, client_secret, options = {})
