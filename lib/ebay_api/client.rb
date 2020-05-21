@@ -2,6 +2,31 @@ module EbayAPI
   class Client
     include HTTParty
 
+    SITE_IDS = {
+      "0"   => "EBAY-US",
+      "2"   => "EBAY-ENCA",
+      "3"   => "EBAY-GB",
+      "15"  => "EBAY-AU",
+      "16"  => "EBAY-AT",
+      "23"  => "EBAY-FRBE",
+      "71"  => "EBAY-FR",
+      "77"  => "EBAY-DE",
+      "100" => "EBAY-MOTOR",
+      "101" => "EBAY-IT",
+      "123" => "EBAY-NLBE",
+      "146" => "EBAY-NL",
+      "186" => "EBAY-ES",
+      "193" => "EBAY-CH",
+      "201" => "EBAY-HK",
+      "203" => "EBAY-IN",
+      "205" => "EBAY-IE",
+      "207" => "EBAY-MY",
+      "210" => "EBAY-FRCA",
+      "211" => "EBAY-PH",
+      "212" => "EBAY-PL",
+      "216" => "EBAY-SG"
+    }.freeze
+
     def self.default_options
       Thread.current["EbayAPI"] || raise("Session has not been activated yet")
     end
@@ -18,8 +43,9 @@ module EbayAPI
     def self.default_headers
       {
         "Content-Type" => 'text/xml',
+        "X-EBAY-API-COMPATIBILITY-LEVEL" => "967",
         "X-EBAY-API-SITEID" => "0",
-        "X-EBAY-API-COMPATIBILITY-LEVEL" => "967"
+        "X-EBAY-SOA-GLOBAL-ID" => "EBAY-US"
       }
     end
 
@@ -42,8 +68,9 @@ module EbayAPI
       session_options[:sandbox] = options[:sandbox] if options[:sandbox].present?
       session_options[:headers] = self.class.default_headers.merge(
         {
+          "X-EBAY-API-IAF-TOKEN" => options[:access_token],
           "X-EBAY-API-SITEID"    => options[:site_id],
-          "X-EBAY-API-IAF-TOKEN" => options[:access_token]
+          "X-EBAY-SOA-GLOBAL-ID" => SITE_IDS[options[:site_id]]
         }
       )
       Thread.current["EbayAPI"] = session_options
@@ -83,7 +110,7 @@ module EbayAPI
 
     def self.token_invalid?(errors=[])
       errors.any? do |error|
-        error['ErrorCode'] == '21917053' && error['ShortMessage'] == 'Expired IAF token.'
+        error['ErrorCode'] == '21917053' && error['ShortMessage'].include?('IAF')
       end
     end
 
