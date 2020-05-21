@@ -144,6 +144,12 @@ module EbayAPI
       new_session_options[:refresh_token] = new_oauth_token.refresh_token
 
       Thread.current["EbayAPI"] = new_session_options
+
+      {
+        access_token: new_oauth_token.token,
+        refresh_token: new_oauth_token.refresh_token,
+        expires_at: new_oauth_token.expires_at
+      }
     end
 
     def self.fetch_new_oauth_token(oauth_client)
