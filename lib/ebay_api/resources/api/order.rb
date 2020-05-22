@@ -208,7 +208,7 @@ module EbayAPI
           else
             xml.CreateTimeFrom params[:create_time_from] if params[:create_time_from]
             xml.CreateTimeTo params[:create_time_to] if  params[:create_time_to]
-            xml.ModTimeFrom  params[:mod_time_to] if params[:mod_time_to]
+            xml.ModTimeFrom  params[:mod_time_from] if params[:mod_time_from]
             xml.ModTimeTo    params[:mod_time_to] if params[:mod_time_to]
             xml.NumberOfDays params[:number_of_days] if params[:number_of_days]
           end
@@ -229,6 +229,39 @@ module EbayAPI
     def self.get_order(order_id)
       orders = get_orders({order_ids: Array.wrap(order_id)})
       orders.one? ? orders.first : orders
+    end
+
+    def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+      response = complete_sale(nil, order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+      raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
+
+      return true
+    end
+
+    def self.ship_order(order_id, shipment_tracking_number, shipping_carrier_used)
+      response = complete_sale(order_id, nil, shipment_tracking_number, shipping_carrier_used)
+      raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
+
+      return true
+    end
+
+    private_class_method def self.complete_sale(order_id, order_line_item_id, tracking_number, carrier_used)
+      body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.CompleteSaleRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.OrderID order_id if order_id
+          xml.OrderLineItemID order_line_item_id if order_line_item_id
+          xml.Shipment {
+            xml.ShipmentTrackingDetails {
+              xml.ShipmentTrackingNumber tracking_number
+              xml.ShippingCarrierUsed carrier_used
+            }
+            xml.ShippedTime Time.now.utc
+          }
+          xml.Shipped true
+        end
+      end.to_xml
+
+      response = http_request(__method__, body)
     end
   end
 end
