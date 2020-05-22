@@ -317,6 +317,8 @@ module EbayAPI
     end
     attribute? :watch_count, Types::Coercible::Float
 
+    alias id item_id
+
     def self.collection_name
       'item'
     end

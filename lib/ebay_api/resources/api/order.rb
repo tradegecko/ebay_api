@@ -189,6 +189,8 @@ module EbayAPI
       end
     end
 
+    alias id order_id
+
     def self.collection_name
       'order'
     end
