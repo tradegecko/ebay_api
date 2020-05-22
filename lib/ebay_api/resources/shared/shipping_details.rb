@@ -3,6 +3,7 @@ require 'ebay_api/resources/shared/measure'
 require 'ebay_api/resources/shared/discount'
 require 'ebay_api/resources/shared/amount'
 require 'ebay_api/resources/shared/shipping_service_options'
+require 'ebay_api/resources/shared/international_shipping_service_option'
 
 module EbayAPI
   class ShippingDetails < Resource
@@ -27,16 +28,7 @@ module EbayAPI
     attribute? :international_calculated_shipping_discount, EbayAPI::Discount
     attribute? :international_flat_shipping_discount, EbayAPI::Discount
     attribute? :international_promotional_shipping_discount, Types::Params::Bool
-    attribute? :international_shipping_service_option do
-      attribute? :import_charge, EbayAPI::Discount
-      attribute? :shipping_insurance_cost, EbayAPI::Discount
-      attribute? :shipping_service, Types::String.optional
-      attribute? :shipping_service_additional_cost, EbayAPI::Discount
-      attribute? :shipping_service_cost, EbayAPI::Discount
-      attribute? :shipping_service_cut_off_time, Types::Params::DateTime
-      attribute? :shipping_service_priority, Types::Coercible::Integer
-      attribute? :ship_to_location, Types::String.optional
-    end
+    attribute? :international_shipping_service_option, Types::EbayArray.of(EbayAPI::InternationalShippingServiceOption)
     attribute? :payment_edited, Types::Params::Bool
     attribute? :payment_instructions, Types::String.optional
     attribute? :promotional_shipping_discount, Types::Params::Bool
