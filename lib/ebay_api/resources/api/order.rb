@@ -208,7 +208,7 @@ module EbayAPI
           else
             xml.CreateTimeFrom params[:create_time_from] if params[:create_time_from]
             xml.CreateTimeTo params[:create_time_to] if  params[:create_time_to]
-            xml.ModTimeFrom  params[:mod_time_to] if params[:mod_time_to]
+            xml.ModTimeFrom  params[:mod_time_from] if params[:mod_time_from]
             xml.ModTimeTo    params[:mod_time_to] if params[:mod_time_to]
             xml.NumberOfDays params[:number_of_days] if params[:number_of_days]
           end
