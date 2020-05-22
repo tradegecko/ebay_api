@@ -20,7 +20,7 @@ module EbayAPI
     attribute? :change_payment_instructions, Types::Params::Bool
     attribute? :cod_cost, Types::Coercible::Float
     attribute? :default_shipping_cost, Types::Coercible::Float
-    attribute? :exclude_ship_to_location, Types::String.optional
+    attribute? :exclude_ship_to_location, Types::EbayArray.of(Types::String.optional)
     attribute? :flat_shipping_discount, EbayAPI::Discount
     attribute? :get_it_fast, Types::Params::Bool
     attribute? :global_shipping, Types::Params::Bool
