@@ -11,7 +11,7 @@ module EbayAPI
         attribute? :new_name, Types::String
       end
     end
-    attribute? :pictures do
+    attribute? :pictures, Types::EbayArray do
       attribute? :variation_specific_name, Types::String
       attribute? :variation_specific_picture_set, Types::EbayArray do
         attribute? :extended_picture_details do
