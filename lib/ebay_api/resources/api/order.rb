@@ -61,6 +61,7 @@ module EbayAPI
     attribute? :monetary_details, EbayAPI::MonetaryDetails
     attribute? :multi_leg_shipping_details, EbayAPI::MultiLegShippingDetails
     attribute? :order_id, Types::String.optional
+    attribute? :id, Types::String.optional
     attribute? :order_status, Types::String.optional
     attribute? :paid_time, Types::Params::DateTime
     attribute? :payment_hold_details, EbayAPI::PaymentHoldDetails
@@ -189,11 +190,15 @@ module EbayAPI
       end
     end
 
-    alias id order_id
-
     def self.collection_name
       'order'
     end
+
+    def self.parse_order(order)
+      order['Id'] = order['OrderID']
+      new(order)
+    end
+
 
     def self.get_orders(params = {})
       # TODO : Ensure Options can be used instead of order_ids
@@ -222,8 +227,10 @@ module EbayAPI
       end.to_xml
 
       response = http_request(__method__, body)
+      return [] if response['GetOrdersResponse']['OrderArray'].nil?
+
       orders = Array.wrap(response['GetOrdersResponse']['OrderArray']['Order'])
-      orders.map { |order| new(order) }
+      orders.map { |order| parse_order(order) }
     rescue EbayAPI::InvalidPage
       []
     end
