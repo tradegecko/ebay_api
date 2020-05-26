@@ -115,6 +115,7 @@ module EbayAPI
       end
     end
     attribute? :item_id, Types::String
+    attribute? :id, Types::String
     attribute? :item_policy_violation do
       attribute? :policy_id, Types::Coercible::Float
       attribute? :policy_text, Types::String
@@ -317,10 +318,13 @@ module EbayAPI
     end
     attribute? :watch_count, Types::Coercible::Float
 
-    alias id item_id
-
     def self.collection_name
       'item'
+    end
+
+    def self.parse_item(item)
+      item['Id'] = item['ItemID']
+      new(item)
     end
 
     def self.get_item(id)
@@ -333,7 +337,7 @@ module EbayAPI
       end.to_xml
 
       response = http_request(__method__, body)
-      new(response['GetItemResponse']['Item'])
+      parse_item(response['GetItemResponse']['Item'])
     end
 
     def self.get_seller_list(params = {})
@@ -362,9 +366,10 @@ module EbayAPI
       end.to_xml
 
       response = http_request(__method__, body)
+      return [] if response['GetSellerListResponse']['ItemArray'].nil?
 
       items = Array.wrap(response['GetSellerListResponse']['ItemArray']['Item'])
-      items.map {|item| new(item) }
+      items.map { |item| parse_item(item) }
     rescue EbayAPI::InvalidPage
       []
     end
@@ -404,6 +409,3 @@ module EbayAPI
     end
   end
 end
-
-
-
