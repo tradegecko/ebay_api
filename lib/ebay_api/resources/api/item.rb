@@ -337,15 +337,15 @@ module EbayAPI
     end
 
     def self.get_seller_list(params = {})
-      start_time_to = params[:start_time_to] || Time.now.utc
-      start_time_from = params[:start_time_from] || start_time_to - 100.days
+      end_time_from = params[:end_time_from] || Time.now.utc
+      end_time_to = params[:end_time_to] || end_time_from + 110.days
 
       body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
         xml.GetSellerListRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
           xml.IncludeVariations true
           xml.Sort params[:sort] if params[:sort]
-          xml.StartTimeFrom start_time_from
-          xml.StartTimeTo start_time_to
+          xml.EndTimeFrom end_time_from
+          xml.EndTimeTo end_time_to
           xml.GranularityLevel params[:granularity_level] || 'Fine'
           xml.Pagination {
             xml.EntriesPerPage params[:limit] || 200
