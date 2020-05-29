@@ -240,21 +240,21 @@ module EbayAPI
       orders.one? ? orders.first : orders
     end
 
-    def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used)
-      response = complete_sale(nil, order_line_item_id, shipment_tracking_number, shipping_carrier_used)
+    def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time = Time.now.utc)
+      response = complete_sale(nil, order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time)
       raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
 
       return true
     end
 
-    def self.ship_order(order_id, shipment_tracking_number, shipping_carrier_used)
-      response = complete_sale(order_id, nil, shipment_tracking_number, shipping_carrier_used)
+    def self.ship_order(order_id, shipment_tracking_number, shipping_carrier_used, shipped_time = Time.now.utc)
+      response = complete_sale(order_id, nil, shipment_tracking_number, shipping_carrier_used, shipped_time)
       raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
 
       return true
     end
 
-    private_class_method def self.complete_sale(order_id, order_line_item_id, tracking_number, carrier_used)
+    private_class_method def self.complete_sale(order_id, order_line_item_id, tracking_number, carrier_used, shipped_time)
       body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
         xml.CompleteSaleRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
           xml.OrderID order_id if order_id
@@ -264,7 +264,7 @@ module EbayAPI
               xml.ShipmentTrackingNumber tracking_number
               xml.ShippingCarrierUsed carrier_used
             }
-            xml.ShippedTime Time.now.utc
+            xml.ShippedTime shipped_time
           }
           xml.Shipped true
         end
