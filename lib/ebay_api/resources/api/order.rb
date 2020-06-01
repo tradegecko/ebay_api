@@ -220,7 +220,7 @@ module EbayAPI
             xml.NumberOfDays params[:number_of_days] if params[:number_of_days]
           end
           xml.Pagination {
-            xml.EntriesPerPage params[:limit] || 200
+            xml.EntriesPerPage params[:limit] || 100
             xml.PageNumber params[:page] || 1
           }
         end
