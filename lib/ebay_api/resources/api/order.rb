@@ -195,7 +195,7 @@ module EbayAPI
     end
 
     def self.parse_order(order)
-      order['Id'] = order['OrderID']
+      order['Id'] = order['ExtendedOrderID']
       new(order)
     end
 
