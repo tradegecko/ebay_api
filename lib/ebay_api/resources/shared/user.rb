@@ -35,7 +35,7 @@ module EbayAPI
     attribute? :e_bay_good_standing, Types::Params::Bool
     attribute? :e_bay_wiki_read_only, Types::Params::Bool
     attribute? :eias_token, Types::String
-    attribute? :email, Types::String
+    attribute? :email, Types::String.optional
     attribute? :enterprise_seller, Types::Params::Bool
     attribute? :feedback_private, Types::Params::Bool
     attribute? :feedback_rating_star, Types::String
@@ -68,11 +68,11 @@ module EbayAPI
     attribute? :unique_neutral_feedback_count, Types::Coercible::Integer
     attribute? :unique_positive_feedback_count, Types::Coercible::Integer
     attribute? :user_anonymized, Types::Params::Bool
-    attribute? :user_first_name, Types::String
+    attribute? :user_first_name, Types::String.optional
     attribute? :user_id, Types::String
     attribute? :user_id_changed, Types::Params::Bool
     attribute? :user_id_last_changed, Types::Params::DateTime
-    attribute? :user_last_name, Types::String
+    attribute? :user_last_name, Types::String.optional
     attribute? :user_subscription, Types::String
     attribute? :vatid, Types::String
     attribute? :vat_status, Types::String
