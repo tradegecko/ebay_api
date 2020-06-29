@@ -392,12 +392,12 @@ module EbayAPI
               xml.Variations {
                 xml.Variation {
                   xml.SKU attributes[:sku]
-                  xml.Quantity attributes[:quantity] if attributes[:quantity]
+                  xml.Quantity attributes[:quantity].to_i if attributes[:quantity]
                   xml.StartPrice attributes[:price] if attributes[:price]
                 }
               }
             else
-              xml.Quantity attributes[:quantity] if attributes[:quantity]
+              xml.Quantity attributes[:quantity].to_i if attributes[:quantity]
               xml.StartPrice attributes[:price] if attributes[:price]
               xml.SKU attributes[:sku] if attributes[:sku]
             end
