@@ -374,33 +374,23 @@ module EbayAPI
       []
     end
 
-    def self.update_attributes(item_id, attributes, has_variations: false)
+    def self.update_attributes(item_id, attributes)
       return if attributes.empty?
 
-      response = revise_fixed_price_item(item_id, attributes, has_variations)
-      raise EbayAPI::Error if response && response['ReviseFixedPriceItemResponse']['Ack'] != 'Success'
+      response = revise_inventory_status(item_id, attributes)
+      raise EbayAPI::Error if response && response['ReviseInventoryStatusRequest']['Ack'] != 'Success'
 
       return true
     end
 
-    private_class_method def self.revise_fixed_price_item(item_id, attributes, has_variations)
+    private_class_method def self.revise_inventory_status(item_id, attributes)
       body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
-        xml.ReviseFixedPriceItemRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
-          xml.Item {
+        xml.ReviseInventoryStatusRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
+          xml.InventoryStatus {
             xml.ItemID item_id
-            if (has_variations && (VARIANT_ATTRIBUTES & attributes.keys).present?)
-              xml.Variations {
-                xml.Variation {
-                  xml.SKU attributes[:sku]
-                  xml.Quantity attributes[:quantity].to_i if attributes[:quantity]
-                  xml.StartPrice attributes[:price] if attributes[:price]
-                }
-              }
-            else
-              xml.Quantity attributes[:quantity].to_i if attributes[:quantity]
-              xml.StartPrice attributes[:price] if attributes[:price]
-              xml.SKU attributes[:sku] if attributes[:sku]
-            end
+            xml.Quantity attributes[:quantity].to_i if attributes[:quantity]
+            xml.StartPrice attributes[:price] if attributes[:price]
+            xml.SKU attributes[:sku] if attributes[:sku]
           }
         end
       end.to_xml
