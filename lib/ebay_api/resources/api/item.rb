@@ -378,7 +378,7 @@ module EbayAPI
       return if attributes.empty?
 
       response = revise_inventory_status(item_id, attributes)
-      raise EbayAPI::Error if response && response['ReviseInventoryStatusRequest']['Ack'] != 'Success'
+      raise EbayAPI::Error if response && response['ReviseInventoryStatusResponse']['Ack'] != 'Success'
 
       return true
     end
