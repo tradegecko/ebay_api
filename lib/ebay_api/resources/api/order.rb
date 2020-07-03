@@ -231,8 +231,10 @@ module EbayAPI
 
       orders = Array.wrap(response['GetOrdersResponse']['OrderArray']['Order'])
       orders.map { |order| parse_order(order) }
-    rescue EbayAPI::InvalidPage
-      []
+    rescue EbayAPI::Error => ex
+      return [] if ex.code == '340'
+
+      raise
     end
 
     def self.get_order(order_id)

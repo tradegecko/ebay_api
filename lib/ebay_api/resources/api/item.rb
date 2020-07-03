@@ -370,8 +370,10 @@ module EbayAPI
 
       items = Array.wrap(response['GetSellerListResponse']['ItemArray']['Item'])
       items.map { |item| parse_item(item) }
-    rescue EbayAPI::InvalidPage
-      []
+    rescue EbayAPI::Error => ex
+      return [] if ex.code == '340'
+
+      raise
     end
 
     def self.update_attributes(item_id, attributes)
