@@ -243,17 +243,11 @@ module EbayAPI
     end
 
     def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time = Time.now.utc)
-      response = complete_sale(nil, order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time)
-      raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
-
-      return true
+      complete_sale(nil, order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time)
     end
 
     def self.ship_order(order_id, shipment_tracking_number, shipping_carrier_used, shipped_time = Time.now.utc)
-      response = complete_sale(order_id, nil, shipment_tracking_number, shipping_carrier_used, shipped_time)
-      raise EbayAPI::Error if response['CompleteSaleResponse']['Ack'] != 'Success'
-
-      return true
+      complete_sale(order_id, nil, shipment_tracking_number, shipping_carrier_used, shipped_time)
     end
 
     private_class_method def self.complete_sale(order_id, order_line_item_id, tracking_number, carrier_used, shipped_time)

@@ -379,10 +379,7 @@ module EbayAPI
     def self.update_attributes(item_id, attributes)
       return if attributes.empty?
 
-      response = revise_inventory_status(item_id, attributes)
-      raise EbayAPI::Error if response && response['ReviseInventoryStatusResponse']['Ack'] != 'Success'
-
-      return true
+      revise_inventory_status(item_id, attributes)
     end
 
     private_class_method def self.revise_inventory_status(item_id, attributes)
