@@ -10,6 +10,6 @@ module EbayAPI
     attribute? :shipping_service_cost, EbayAPI::Amount
     attribute? :shipping_service_cut_off_time, Types::Params::DateTime
     attribute? :shipping_service_priority, Types::Coercible::Integer
-    attribute? :ship_to_location, Types::String.optional
+    attribute? :ship_to_location, Types::EbayArray.of(Types::String.optional)
   end
 end
