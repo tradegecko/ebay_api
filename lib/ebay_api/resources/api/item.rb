@@ -370,17 +370,16 @@ module EbayAPI
 
       items = Array.wrap(response['GetSellerListResponse']['ItemArray']['Item'])
       items.map { |item| parse_item(item) }
-    rescue EbayAPI::InvalidPage
-      []
+    rescue EbayAPI::Error => ex
+      return [] if ex.code == '340'
+
+      raise
     end
 
     def self.update_attributes(item_id, attributes)
       return if attributes.empty?
 
-      response = revise_inventory_status(item_id, attributes)
-      raise EbayAPI::Error if response && response['ReviseInventoryStatusResponse']['Ack'] != 'Success'
-
-      return true
+      revise_inventory_status(item_id, attributes)
     end
 
     private_class_method def self.revise_inventory_status(item_id, attributes)

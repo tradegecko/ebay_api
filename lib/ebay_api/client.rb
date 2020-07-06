@@ -66,47 +66,21 @@ module EbayAPI
     end
 
     def self.perform_request(http_method, path, options = {}, &block)
-      begin
-        response = ActiveSupport::Notifications.instrument("request.ebay_api") do |payload|
-          payload[:method]        = http_method::METHOD.downcase
-          payload[:request_uri]   = path
-          payload[:request_body]  = options[:body]
-          payload[:response_body] = super
-        end
-        raise_error(response.values.first['Errors'])
-        response.parsed_response
-      rescue EbayAPI::InvalidToken
-        refresh_token!
-        options[:headers]["X-EBAY-API-IAF-TOKEN"] = Thread.current["EbayAPI"][:headers]["X-EBAY-API-IAF-TOKEN"]
-        retry
+      response = ActiveSupport::Notifications.instrument("request.ebay_api") do |payload|
+        payload[:method]        = http_method::METHOD.downcase
+        payload[:request_uri]   = path
+        payload[:request_body]  = options[:body]
+        payload[:response_body] = super
       end
+      raise_error(response.values.first['Errors'])
+      response.parsed_response
     end
 
     def self.raise_error(errors)
       return if errors.nil?
 
       errors = Array.wrap(errors)
-      if token_invalid?(errors)
-        raise EbayAPI::InvalidToken
-      elsif page_invalid?(errors)
-        raise EbayAPI::InvalidPage
-      else
-        error = errors.first
-        error_message = "Code: #{error['ErrorCode']} - #{error['ShortMessage']}"
-        raise EbayAPI::Error.new error_message
-      end
-    end
-
-    def self.token_invalid?(errors=[])
-      errors.any? do |error|
-        error['ErrorCode'] == '21917053' && error['ShortMessage'].include?('IAF')
-      end
-    end
-
-    def self.page_invalid?(errors=[])
-      errors.any? do |error|
-        error['ErrorCode'] == '340' && error['ShortMessage'] == 'Invalid page number.'
-      end
+      raise EbayAPI::Error.new(errors.first)
     end
 
     def self.authentication_url

@@ -13,8 +13,12 @@ require 'ebay_api/resources/api/item'
 require 'ebay_api/resources/api/order'
 
 module EbayAPI
-  class Error < StandardError; end
-  class InvalidToken < StandardError; end
-  class InvalidPage < StandardError; end
-  # Your code goes here...
+  class Error < StandardError
+    attr_reader :code, :long_message
+    def initialize(error)
+      @code = error['ErrorCode']
+      @long_message = error['LongMessage']
+      super(error['ShortMessage'])
+    end
+  end
 end
