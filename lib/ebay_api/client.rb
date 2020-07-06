@@ -80,7 +80,7 @@ module EbayAPI
       return if errors.nil?
 
       errors = Array.wrap(errors)
-      raise EbayAPI::Error.new(errors)
+      raise EbayAPI::Error.new(errors.first)
     end
 
     def self.authentication_url
