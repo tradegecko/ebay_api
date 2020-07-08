@@ -11,7 +11,7 @@ module EbayAPI
     attribute? :apply_shipping_discount, Types::Params::Bool
     attribute? :calculated_shipping_discount, EbayAPI::Discount
     attribute? :calculated_shipping_rate do
-      attribute? :international_packaging_handling_costs, Types::Coercible::Float
+      attribute? :international_packaging_handling_costs, EbayAPI::Amount
       attribute? :measurement_unit, EbayAPI::Measure
       attribute? :originating_postal_code, Types::String.optional
       attribute? :packaging_handling_costs, EbayAPI::Amount
