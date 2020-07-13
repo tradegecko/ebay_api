@@ -21,4 +21,13 @@ module EbayAPI
       super(error['ShortMessage'])
     end
   end
+
+  class DailyLimitExceeded < Error
+  end
+
+  class UserLimitExceeded < Error
+  end
+
+  class CallUsageLimitReached < Error
+  end
 end

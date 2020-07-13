@@ -80,7 +80,18 @@ module EbayAPI
       return if errors.nil?
 
       errors = Array.wrap(errors)
-      raise EbayAPI::Error.new(errors.first)
+      error = errors.first
+
+      case error['ErrorCode']
+      when '518'
+        raise EbayAPI::CallUsageLimitReached.new(error)
+      when '18000'
+        raise EbayAPI::DailyLimitExceeded.new(error)
+      when '218050'
+        raise EbayAPI::UserLimitExceeded.new(error)
+      else
+        raise EbayAPI::Error.new(error)
+      end
     end
 
     def self.authentication_url
