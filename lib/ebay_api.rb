@@ -11,6 +11,7 @@ require 'ebay_api/client'
 require 'ebay_api/concerns/singleton'
 require 'ebay_api/resources/api/item'
 require 'ebay_api/resources/api/order'
+require 'ebay_api/resources/api/api_access_rule'
 
 module EbayAPI
   class Error < StandardError
