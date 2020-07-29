@@ -158,7 +158,7 @@ module EbayAPI
     attribute? :listing_enhancement, Types::String
     attribute? :listing_subtype_2, Types::String
     attribute? :listing_type, Types::String
-    attribute? :location, Types::String
+    attribute? :location, Types::String.optional
     attribute? :location_defaulted, Types::Params::Bool
     attribute? :lot_size, Types::Coercible::Integer
     attribute? :mechanical_check_accepted, Types::Params::Bool
