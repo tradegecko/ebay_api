@@ -190,7 +190,7 @@ module EbayAPI
       attribute? :picture_source, Types::String
       attribute? :picture_url, Types::EbayArray.of(Types::String)
     end
-    attribute? :postal_code, Types::String
+    attribute? :postal_code, Types::String.optional
     attribute? :primary_category, EbayAPI::Category
     attribute? :private_listing, Types::Params::Bool
     attribute? :product_listing_details do
