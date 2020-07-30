@@ -83,6 +83,8 @@ module EbayAPI
       error = errors.first
 
       case error['ErrorCode']
+      when '21917182'
+        # Ignore Invalid orderlineids warning
       when '518'
         raise EbayAPI::CallUsageLimitReached.new(error)
       when '18000'
