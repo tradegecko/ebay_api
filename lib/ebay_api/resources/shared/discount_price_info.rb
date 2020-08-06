@@ -5,7 +5,7 @@ module EbayAPI
   class DiscountPriceInfo < Resource
     attribute? :made_for_outlet_comparison_price, EbayAPI::Amount
     attribute? :minimum_advertised_price, EbayAPI::Amount
-    attribute? :minimum_advertised_price_exposure, EbayAPI::Amount
+    attribute? :minimum_advertised_price_exposure, Types::String
     attribute? :original_retail_price, EbayAPI::Amount
     attribute? :pricing_treatment, Types::String
     attribute? :sold_off_e_bay, Types::Params::Bool
