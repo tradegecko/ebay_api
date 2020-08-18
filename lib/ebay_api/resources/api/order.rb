@@ -257,8 +257,8 @@ module EbayAPI
           xml.OrderLineItemID order_line_item_id if order_line_item_id
           xml.Shipment {
             xml.ShipmentTrackingDetails {
-              xml.ShipmentTrackingNumber tracking_number if tracking_number
-              xml.ShippingCarrierUsed carrier_used if carrier_used
+              xml.ShipmentTrackingNumber tracking_number if tracking_number.present?
+              xml.ShippingCarrierUsed carrier_used if carrier_used.present?
             } if tracking_number || carrier_used
             xml.ShippedTime shipped_time
           }
