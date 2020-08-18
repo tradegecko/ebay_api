@@ -66,11 +66,12 @@ module EbayAPI
     end
 
     def self.perform_request(http_method, path, options = {}, &block)
-      response = ActiveSupport::Notifications.instrument("request.ebay_api") do |payload|
+      response = super
+      ActiveSupport::Notifications.instrument("request.ebay_api") do |payload|
         payload[:method]        = http_method::METHOD.downcase
         payload[:request_uri]   = path
         payload[:request_body]  = options[:body]
-        payload[:response_body] = super
+        payload[:response_body] = response.body
       end
       raise_error(response.values.first['Errors'])
       response.parsed_response
