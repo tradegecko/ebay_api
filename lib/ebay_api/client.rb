@@ -70,8 +70,8 @@ module EbayAPI
       ActiveSupport::Notifications.instrument("request.ebay_api") do |payload|
         payload[:method]        = http_method::METHOD.downcase
         payload[:request_uri]   = path
-        payload[:request_body]  = options[:body]
-        payload[:response_body] = response.body
+        payload[:request_body]  = Hash.from_xml(options[:body]).to_s
+        payload[:response_body] = response.parsed_response.to_s
       end
       raise_error(response.values.first['Errors'])
       response.parsed_response
