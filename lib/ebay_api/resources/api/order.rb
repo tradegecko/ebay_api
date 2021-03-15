@@ -238,8 +238,7 @@ module EbayAPI
     end
 
     def self.get_order(order_id)
-      orders = get_orders({order_ids: Array.wrap(order_id)})
-      orders.one? ? orders.first : orders
+      get_orders({order_ids: Array.wrap(order_id)}).first
     end
 
     def self.ship_line_item(order_line_item_id, shipment_tracking_number, shipping_carrier_used, shipped_time = Time.now.utc)
