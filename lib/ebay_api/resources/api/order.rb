@@ -202,7 +202,7 @@ module EbayAPI
 
     def self.get_orders(params = {})
       # TODO : Ensure Options can be used instead of order_ids
-      return if (params[:order_ids].nil? && params[:create_time_from].nil? && params[:mod_time_from].nil?)
+      return [] if (params[:order_ids].nil? && params[:create_time_from].nil? && params[:mod_time_from].nil?)
 
       body = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
         xml.GetOrdersRequest("xmlns" => "urn:ebay:apis:eBLBaseComponents") do
