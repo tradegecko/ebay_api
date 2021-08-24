@@ -15,6 +15,12 @@ require 'ebay_api/resources/api/api_access_rule'
 require 'ebay_api/notification_validator'
 
 module EbayAPI
+  class GenerateAccessTokenFailed < StandardError
+  end
+
+  class PublicKeyFetchFailed < StandardError
+  end
+
   class Error < StandardError
     attr_reader :code, :long_message
     def initialize(error)

@@ -23,11 +23,14 @@ module EbayAPI
   private
 
     def public_key
-      HTTParty.get("#{PUBLIC_KEY_URL}#{decoded_signature['kid']}",
+      response = HTTParty.get("#{PUBLIC_KEY_URL}#{decoded_signature['kid']}",
         headers: {
           'Authorization' => "Bearer #{access_token}",
         }
-      )['key']
+      )
+      raise EbayAPI::PublicKeyFetchFailed unless response.code == 200
+
+      response['key']
     end
 
     def format_key(key)
@@ -39,13 +42,16 @@ module EbayAPI
     end
 
     def access_token
-      HTTParty.post(AUTHENTICATION_URL,
+      response = HTTParty.post(AUTHENTICATION_URL,
         body: URI.encode_www_form({grant_type: "client_credentials", scope: "https://api.ebay.com/oauth/api_scope"}),
         headers: {
           'Content-Type' => 'application/x-www-form-urlencoded',
           'Authorization' => "Basic #{encoded_client_credentials}",
         }
-      )['access_token']
+      )
+      raise EbayAPI::GenerateAccessTokenFailed unless response.code == 200
+
+      response['access_token']
     end
 
     def encoded_client_credentials
