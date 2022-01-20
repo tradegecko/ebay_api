@@ -7,11 +7,12 @@ module EbayAPI
     PKEY_START = "-----BEGIN PUBLIC KEY-----".freeze
     PKEY_END = "-----END PUBLIC KEY-----".freeze
 
-    def initialize(notification, signature, client_id, client_secret)
-      @signature = signature
+    def initialize(notification, signature, client_id, client_secret, public_key = nil)
       @notification = notification
+      @signature = signature
       @client_id = client_id
       @client_secret = client_secret
+      @public_key = public_key
     end
 
     def valid?
@@ -20,9 +21,13 @@ module EbayAPI
       verifier.verify(OpenSSL::Digest.new('SHA1'), signature_base64, notification.to_json)
     end
 
+    def public_key
+      @public_key ||= fetch_public_key
+    end
+
   private
 
-    def public_key
+    def fetch_public_key
       response = HTTParty.get("#{PUBLIC_KEY_URL}#{decoded_signature['kid']}",
         headers: {
           'Authorization' => "Bearer #{access_token}",
