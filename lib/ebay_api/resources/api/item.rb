@@ -165,7 +165,7 @@ module EbayAPI
     attribute? :payment_allowed_site, Types::EbayArray.of(Types::String)
     attribute? :payment_details do
       attribute? :days_to_full_payment, Types::Coercible::Integer
-      attribute? :deposit_amount, EbayAPI::Amount
+      attribute? :deposit_amount, Types::Coercible::Float
       attribute? :deposit_type, Types::String
       attribute? :hours_to_deposit, Types::Coercible::Integer
     end
