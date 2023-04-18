@@ -4,7 +4,7 @@ require 'ebay_api/resources/shared/amount'
 module EbayAPI
   class MonetaryDetails < Resource
     attribute? :payments do
-      attribute? :payment, Types::Array do
+      attribute? :payment, Types::EbayArray do
         attribute? :fee_or_credit_amount, EbayAPI::Amount
         attribute? :payee do
           attribute? :type, Types::String.optional
@@ -15,7 +15,7 @@ module EbayAPI
           attribute? :value, Types::String.optional
         end
         attribute? :payment_amount, EbayAPI::Amount
-        attribute? :payment_reference_id, Types::Array do
+        attribute? :payment_reference_id, Types::EbayArray do
           attribute? :type, Types::String.optional
           attribute? :value, Types::String.optional
         end
@@ -28,7 +28,7 @@ module EbayAPI
       end
     end
     attribute? :refunds do
-      attribute? :refund, Types::Array do
+      attribute? :refund, Types::EbayArray do
         attribute? :fee_or_credit_amount, EbayAPI::Amount
         attribute? :reference_id do
           attribute? :type, Types::String.optional
