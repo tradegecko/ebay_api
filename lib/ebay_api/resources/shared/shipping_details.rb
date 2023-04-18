@@ -55,15 +55,15 @@ module EbayAPI
     attribute? :shipment_tracking_details, Types::EbayArray do
       attribute? :shipment_line_item do
         attribute? :line_item, Types::EbayArray do
-          attribute :country_of_origin, Types::String.optional
-          attribute :description, Types::String.optional
-          attribute :item_id_type, Types::String.optional
-          attribute :quantity, Types::Coercible::Integer
+          attribute? :country_of_origin, Types::String.optional
+          attribute? :description, Types::String.optional
+          attribute? :item_id_type, Types::String.optional
+          attribute? :quantity, Types::Coercible::Integer
           attribute :transaction_id, Types::String.optional
         end
       end
-      attribute :shipment_tracking_number, Types::String.optional
-      attribute :shipping_carrier_used, Types::String.optional
+      attribute? :shipment_tracking_number, Types::String.optional
+      attribute? :shipping_carrier_used, Types::String.optional
     end
     attribute? :shipping_discount_profile_id, Types::String.optional
     attribute? :shipping_rate_error_message, Types::String.optional
