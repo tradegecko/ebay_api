@@ -6,7 +6,11 @@ module EbayAPI
     attribute? :payments do
       attribute? :payment, Types::Array do
         attribute? :fee_or_credit_amount, EbayAPI::Amount
-        attribute? :payee, Types::Array do
+        attribute? :payee do
+          attribute? :type, Types::String.optional
+          attribute? :value, Types::String.optional
+        end
+        attribute? :payer do
           attribute? :type, Types::String.optional
           attribute? :value, Types::String.optional
         end
